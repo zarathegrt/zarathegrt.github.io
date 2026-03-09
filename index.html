@@ -528,17 +528,216 @@
     .hero-photo-frame { width: 200px; height: 240px; }
   }
 
+
+  /* ══════════════════════════════════════
+     UPGRADE PACK: GLITCH + TILT + SKILLS
+     + MATRIX BG + SOUND + TRANSITIONS
+  ══════════════════════════════════════ */
+
+  /* ── MATRIX CANVAS ── */
+  #matrix-canvas {
+    position: fixed; top: 0; left: 0; z-index: 0;
+    opacity: 0.07; pointer-events: none;
+  }
+
+  /* ── GLITCH TEXT ── */
+  .glitch {
+    position: relative; display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: transparent;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .glitch::before {
+    left: 3px; top: -2px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glitch1 4s infinite;
+    opacity: 0.8;
+  }
+  .glitch::after {
+    left: -3px; top: 2px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent), var(--accent3));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: glitch2 4s infinite;
+    opacity: 0.6;
+  }
+  @keyframes glitch1 {
+    0%,90%,100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+    91% { clip-path: inset(20% 0 60% 0); transform: translate(-4px, 1px); }
+    92% { clip-path: inset(50% 0 30% 0); transform: translate(4px, -1px); }
+    93% { clip-path: inset(70% 0 10% 0); transform: translate(-3px, 2px); }
+    94% { clip-path: inset(10% 0 80% 0); transform: translate(3px, -2px); }
+    95% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  }
+  @keyframes glitch2 {
+    0%,87%,100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+    88% { clip-path: inset(60% 0 20% 0); transform: translate(4px, -2px); }
+    89% { clip-path: inset(30% 0 50% 0); transform: translate(-4px, 1px); }
+    90% { clip-path: inset(80% 0 5%  0); transform: translate(2px, -1px); }
+    91% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+  }
+
+  /* ── 3D TILT CARDS ── */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: box-shadow 0.4s;
+    will-change: transform;
+  }
+  .tilt-card:hover {
+    box-shadow: 0 24px 60px rgba(110,231,247,0.15), 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .tilt-card .card-shine {
+    position: absolute; inset: 0; pointer-events: none; z-index: 2;
+    background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.3s; border-radius: inherit;
+  }
+  .tilt-card:hover .card-shine { opacity: 1; }
+
+  /* ── SKILL PROGRESS RINGS ── */
+  .skills-rings-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .skill-ring-item {
+    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  }
+  .ring-svg { transform: rotate(-90deg); overflow: visible; }
+  .ring-track { fill: none; stroke: rgba(110,231,247,0.1); stroke-width: 4; }
+  .ring-fill {
+    fill: none; stroke-width: 4; stroke-linecap: round;
+    stroke-dasharray: 188; stroke-dashoffset: 188;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.16,1,0.3,1);
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+  .ring-fill.animated { stroke-dashoffset: var(--offset); }
+  .ring-label {
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); text-align: center;
+  }
+  .ring-pct {
+    position: absolute; font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 0.85rem; color: var(--text);
+  }
+  .ring-wrap { position: relative; display: grid; place-items: center; }
+
+  /* ── SECTION WIPE TRANSITION ── */
+  .section-wipe {
+    position: relative; overflow: hidden;
+  }
+  .section-wipe::before {
+    content: ''; position: absolute; inset: 0; z-index: 2;
+    background: linear-gradient(90deg, var(--bg) 0%, rgba(110,231,247,0.04) 50%, var(--bg) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    pointer-events: none;
+  }
+  .section-wipe.wipe-active::before { transform: translateX(100%); }
+
+  /* ── NOISE WIPE overlay ── */
+  .noise-wipe {
+    position: fixed; inset: 0; z-index: 200;
+    pointer-events: none; opacity: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent, transparent 2px,
+      rgba(110,231,247,0.015) 2px, rgba(110,231,247,0.015) 4px
+    );
+    transition: opacity 0.3s;
+  }
+  .noise-wipe.flash { opacity: 1; animation: noiseFlash 0.5s ease forwards; }
+  @keyframes noiseFlash {
+    0% { opacity: 0.8; }
+    100% { opacity: 0; }
+  }
+
+  /* ── SOUND BUTTON ── */
+  .sound-btn {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 500;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: none; transition: border-color 0.3s, transform 0.2s;
+    font-size: 1.1rem;
+  }
+  .sound-btn:hover { border-color: var(--accent); transform: scale(1.1); }
+  .sound-btn.active { border-color: var(--accent); background: rgba(110,231,247,0.1); }
+  .sound-bars {
+    display: flex; gap: 2px; align-items: flex-end; height: 16px;
+  }
+  .sound-bar {
+    width: 3px; background: var(--accent); border-radius: 2px;
+    transform-origin: bottom;
+  }
+  .sound-btn.active .sound-bar:nth-child(1) { animation: bar 0.8s 0s ease infinite; }
+  .sound-btn.active .sound-bar:nth-child(2) { animation: bar 0.8s 0.15s ease infinite; }
+  .sound-btn.active .sound-bar:nth-child(3) { animation: bar 0.8s 0.3s ease infinite; }
+  .sound-btn.active .sound-bar:nth-child(4) { animation: bar 0.8s 0.45s ease infinite; }
+  @keyframes bar {
+    0%,100% { height: 4px; } 50% { height: 14px; }
+  }
+  .sound-bar { height: 4px; }
+
+  /* ── RESUME BUTTON ── */
+  .resume-btn {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.75rem 1.75rem;
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: transparent; color: var(--gold); text-decoration: none;
+    border: 1px solid var(--gold); cursor: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    position: relative; overflow: hidden;
+  }
+  .resume-btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--gold); transform: translateX(-100%);
+    transition: transform 0.3s ease; z-index: -1;
+  }
+  .resume-btn:hover { color: var(--bg); box-shadow: 0 0 30px rgba(251,191,36,0.3); transform: translateY(-2px); }
+  .resume-btn:hover::before { transform: translateX(0); }
+
+  /* ── HERO layout tweak for taller photo ── */
+  .hero-layout { align-items: center; }
+
+  /* ── SCANLINE flicker on photo ── */
+  @keyframes flicker {
+    0%,97%,100% { opacity: 1; } 98% { opacity: 0.85; } 99% { opacity: 1; }
+  }
+  .hero-photo-frame { animation: flicker 6s infinite; }
+
+  /* ── section transition flash ── */
+  @keyframes sectionReveal {
+    from { opacity: 0; transform: translateY(20px) scale(0.99); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .section-anim { animation: sectionReveal 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+
 </style>
 </head>
 <body>
 
+<canvas id="matrix-canvas"></canvas>
+<div class="noise-wipe" id="noiseWipe"></div>
+<button class="sound-btn" id="soundBtn" title="Toggle ambient sound">
+  <div class="sound-bars">
+    <div class="sound-bar"></div><div class="sound-bar"></div>
+    <div class="sound-bar"></div><div class="sound-bar"></div>
+  </div>
+</button>
 <div class="cursor-trail" id="cursorTrail"></div>
 <div class="cursor-outer" id="cursorOuter"></div>
 <div class="cursor-dot" id="cursorDot"></div>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">ZARA</div>
+  <div class="nav-logo">ZA/</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
@@ -556,8 +755,8 @@
 
   <div class="hero-eyebrow"><span></span>Available for collaborations & opportunities</div>
   <h1 class="hero-name">
-    <span class="line1">ZARA</span>
-    <span class="line2">AHAMED</span>
+    <span class="line1 glitch" data-text="ZARA" style="--g:var(--text)">ZARA</span>
+    <span class="line2 glitch" data-text="AHAMED">AHAMED</span>
   </h1>
   <p class="hero-tagline">Engineer · Designer · Builder</p>
   <p class="hero-desc">B.Tech CSE (IoT) student at SRMIST, Chennai. Building intelligent systems at the intersection of AI, IoT, and web technology.</p>
@@ -565,6 +764,7 @@
   <div class="hero-cta">
     <a href="#projects" class="btn-primary">View Projects</a>
     <a href="#contact" class="btn-ghost">Get in Touch</a>
+    <a href="#" class="resume-btn" id="resumeBtn" onclick="downloadResume(event)">⬇ Download CV</a>
   </div>
 
   <div class="hero-stats">
@@ -677,13 +877,65 @@
           </div>
         </div>
       </div>
+
+      <!-- Skill Progress Rings -->
+      <div style="margin-top: 2rem;">
+        <div class="section-label" style="margin-bottom:1.25rem;">Proficiency</div>
+        <div class="skills-rings-grid" id="skillRings">
+          <!-- Python -->
+          <div class="skill-ring-item">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="70" height="70" viewBox="0 0 70 70">
+                <circle class="ring-track" cx="35" cy="35" r="30"/>
+                <circle class="ring-fill" cx="35" cy="35" r="30" stroke="var(--accent)" style="--offset:28" data-pct="85"/>
+              </svg>
+              <span class="ring-pct">85%</span>
+            </div>
+            <div class="ring-label">Python</div>
+          </div>
+          <!-- TensorFlow -->
+          <div class="skill-ring-item">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="70" height="70" viewBox="0 0 70 70">
+                <circle class="ring-track" cx="35" cy="35" r="30"/>
+                <circle class="ring-fill" cx="35" cy="35" r="30" stroke="var(--accent3)" style="--offset:57" data-pct="70"/>
+              </svg>
+              <span class="ring-pct">70%</span>
+            </div>
+            <div class="ring-label">AI/ML</div>
+          </div>
+          <!-- Flask/Web -->
+          <div class="skill-ring-item">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="70" height="70" viewBox="0 0 70 70">
+                <circle class="ring-track" cx="35" cy="35" r="30"/>
+                <circle class="ring-fill" cx="35" cy="35" r="30" stroke="var(--accent2)" style="--offset:38" data-pct="80"/>
+              </svg>
+              <span class="ring-pct">80%</span>
+            </div>
+            <div class="ring-label">Web Dev</div>
+          </div>
+          <!-- IoT -->
+          <div class="skill-ring-item">
+            <div class="ring-wrap">
+              <svg class="ring-svg" width="70" height="70" viewBox="0 0 70 70">
+                <circle class="ring-track" cx="35" cy="35" r="30"/>
+                <circle class="ring-fill" cx="35" cy="35" r="30" stroke="var(--gold)" style="--offset:66" data-pct="65"/>
+              </svg>
+              <span class="ring-pct">65%</span>
+            </div>
+            <div class="ring-label">IoT</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <!-- EXPERIENCE -->
 <section>
-  <div id="experience">
+  <div id="experience" class="section-wipe">
     <div class="section-label">02 — Experience</div>
     <h2 class="section-title">Where I've Contributed</h2>
     <div class="exp-timeline">
@@ -736,13 +988,13 @@
 
 <!-- PROJECTS -->
 <section>
-  <div id="projects">
+  <div id="projects" class="section-wipe">
     <div class="section-label">03 — Projects</div>
     <h2 class="section-title">Things I've Built</h2>
     <div class="projects-grid">
 
-      <div class="project-card reveal">
-        <div class="corner-cut"></div>
+      <div class="project-card tilt-card reveal">
+        <div class="corner-cut"></div><div class="card-shine"></div>
         <div class="project-num">01</div>
         <div class="project-title">Sign Language Interpreter</div>
         <div class="project-role">AI / Computer Vision</div>
@@ -754,8 +1006,8 @@
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay: 0.1s">
-        <div class="corner-cut"></div>
+      <div class="project-card tilt-card reveal" style="transition-delay: 0.1s">
+        <div class="corner-cut"></div><div class="card-shine"></div>
         <div class="project-num">02</div>
         <div class="project-title">Medication Tracker Web App</div>
         <div class="project-role">Full-Stack Development</div>
@@ -767,8 +1019,8 @@
         </div>
       </div>
 
-      <div class="project-card reveal" style="transition-delay: 0.2s">
-        <div class="corner-cut"></div>
+      <div class="project-card tilt-card reveal" style="transition-delay: 0.2s">
+        <div class="corner-cut"></div><div class="card-shine"></div>
         <div class="project-num">03</div>
         <div class="project-title">Voice-Controlled Smart Lighting</div>
         <div class="project-role">IoT / Embedded Systems</div>
@@ -786,7 +1038,7 @@
 
 <!-- CERTIFICATIONS -->
 <section>
-  <div id="certifications">
+  <div id="certifications" class="section-wipe">
     <div class="section-label">04 — Certifications</div>
     <h2 class="section-title">Credentials</h2>
     <div class="certs-list">
@@ -842,7 +1094,7 @@
 
 <!-- ACHIEVEMENTS -->
 <section>
-  <div id="achievements">
+  <div id="achievements" class="section-wipe">
     <div class="section-label">05 — Achievements</div>
     <h2 class="section-title">Highlights & Recognition</h2>
     <div class="achievements-grid">
@@ -952,8 +1204,8 @@
 
 <!-- FOOTER -->
 <footer>
-  <span></span>
-  <span style="color: var(--accent)"></span>
+  <span>© 2025 Zara Ahamed — Built with passion in Chennai</span>
+  <span style="color: var(--accent)">ZA/</span>
 </footer>
 
 <script>
@@ -1016,6 +1268,236 @@
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   });
+
+
+  // ══════════════════════════════════
+  // MATRIX BACKGROUND
+  // ══════════════════════════════════
+  (function() {
+    const canvas = document.getElementById('matrix-canvas');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    const chars = 'ZARAAHAMED01アイウエオカキクケコサシスセソタチツテトナニヌネノ<>{}[]|/\\';
+    const cols = Math.floor(window.innerWidth / 18);
+    const drops = Array(cols).fill(1);
+    function draw() {
+      ctx.fillStyle = 'rgba(5,8,16,0.04)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = '13px DM Mono, monospace';
+      drops.forEach((y, i) => {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const alpha = Math.random() > 0.95 ? 1 : 0.3;
+        ctx.fillStyle = `rgba(110,231,247,${alpha})`;
+        ctx.fillText(ch, i * 18, y * 18);
+        if (y * 18 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      });
+    }
+    setInterval(draw, 55);
+  })();
+
+  // ══════════════════════════════════
+  // 3D TILT CARDS
+  // ══════════════════════════════════
+  document.querySelectorAll('.tilt-card').forEach(card => {
+    const shine = card.querySelector('.card-shine');
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const cx = r.width/2, cy = r.height/2;
+      const rx2 = (y - cy) / cy * -12;
+      const ry2 = (x - cx) / cx * 12;
+      card.style.transform = `perspective(600px) rotateX(${rx2}deg) rotateY(${ry2}deg) scale3d(1.02,1.02,1.02)`;
+      if (shine) { shine.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.1) 0%, transparent 60%)`; shine.style.opacity = '1'; }
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(600px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+      if (shine) shine.style.opacity = '0';
+    });
+  });
+
+  // ══════════════════════════════════
+  // SKILL RINGS ANIMATION
+  // ══════════════════════════════════
+  const ringObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.ring-fill').forEach(ring => {
+          const pct = parseInt(ring.dataset.pct);
+          const circumference = 188;
+          const offset = circumference - (pct / 100) * circumference;
+          ring.style.setProperty('--offset', offset);
+          ring.classList.add('animated');
+        });
+        ringObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  const skillRingsEl = document.getElementById('skillRings');
+  if (skillRingsEl) ringObserver.observe(skillRingsEl);
+
+  // ══════════════════════════════════
+  // SECTION WIPE ON SCROLL
+  // ══════════════════════════════════
+  const wipeObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('wipe-active');
+        // trigger noise flash
+        const nw = document.getElementById('noiseWipe');
+        nw.classList.remove('flash');
+        void nw.offsetWidth;
+        nw.classList.add('flash');
+      }
+    });
+  }, { threshold: 0.05 });
+  document.querySelectorAll('.section-wipe').forEach(s => wipeObserver.observe(s));
+
+  // ══════════════════════════════════
+  // AMBIENT SOUND (Web Audio API)
+  // ══════════════════════════════════
+  let audioCtx = null, gainNode = null, soundOn = false;
+  const soundBtn = document.getElementById('soundBtn');
+  function createAmbient() {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    gainNode = audioCtx.createGain();
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.connect(audioCtx.destination);
+    // Drone pad: layered oscillators
+    const freqs = [55, 82.4, 110, 164.8, 220];
+    freqs.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = i % 2 === 0 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      // slow detune drift
+      osc.frequency.linearRampToValueAtTime(freq * 1.005, audioCtx.currentTime + 8);
+      g.gain.setValueAtTime(i === 0 ? 0.18 : 0.05, audioCtx.currentTime);
+      osc.connect(g); g.connect(gainNode);
+      osc.start();
+    });
+    // subtle hi-freq shimmer
+    const shimmer = audioCtx.createOscillator();
+    const shimG = audioCtx.createGain();
+    shimmer.type = 'sine'; shimmer.frequency.value = 528;
+    shimG.gain.setValueAtTime(0.015, audioCtx.currentTime);
+    shimmer.connect(shimG); shimG.connect(gainNode);
+    shimmer.start();
+  }
+  function playClickSound() {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.1);
+    g.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+    osc.connect(g); g.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+  }
+  function playHoverSound() {
+    if (!audioCtx || !soundOn) return;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.value = 660;
+    g.gain.setValueAtTime(0.03, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+    osc.connect(g); g.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+  }
+  soundBtn.addEventListener('click', () => {
+    if (!audioCtx) createAmbient();
+    soundOn = !soundOn;
+    soundBtn.classList.toggle('active', soundOn);
+    gainNode.gain.cancelScheduledValues(audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(gainNode.gain.value, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(soundOn ? 0.4 : 0, audioCtx.currentTime + 1.5);
+    if (soundOn) playClickSound();
+  });
+  document.querySelectorAll('a, button, .project-card, .ach-card').forEach(el => {
+    el.addEventListener('mouseenter', playHoverSound);
+    el.addEventListener('click', () => { if(soundOn) playClickSound(); });
+  });
+
+  // ══════════════════════════════════
+  // DOWNLOAD RESUME
+  // ══════════════════════════════════
+  function downloadResume(e) {
+    e.preventDefault();
+    playClickSound();
+    // Generate a styled resume HTML and trigger download
+    const resumeHTML = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>Zara Ahamed - Resume</title>
+<style>
+  body { font-family: 'Courier New', monospace; max-width: 800px; margin: 40px auto; padding: 40px; color: #1a1a2e; line-height: 1.6; }
+  h1 { font-size: 2.2rem; margin: 0; letter-spacing: -0.02em; }
+  .accent { color: #0891b2; }
+  .contact { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 0.5rem 0 1.5rem; font-size: 0.8rem; color: #475569; }
+  h2 { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; border-bottom: 2px solid #0891b2; padding-bottom: 0.3rem; margin-top: 1.5rem; color: #0891b2; }
+  .role { font-weight: bold; } .org { color: #0891b2; font-size: 0.85rem; }
+  .date { float: right; color: #64748b; font-size: 0.8rem; }
+  ul { margin: 0.3rem 0 0.8rem 1.2rem; } li { font-size: 0.85rem; margin-bottom: 0.2rem; }
+  .skills-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0; }
+  .tag { background: #e0f2fe; color: #0369a1; padding: 0.15rem 0.5rem; font-size: 0.75rem; border-radius: 2px; }
+  .cert { margin: 0.3rem 0; font-size: 0.85rem; }
+  @media print { body { margin: 20px; padding: 20px; } }
+</style></head><body>
+<h1>ZARA <span class="accent">AHAMED</span></h1>
+<div class="contact">
+  <span>tellzara.ahamed@gmail.com</span><span>+91 895 166 35 25</span>
+  <span>Chennai, India</span><span>linkedin.com/in/zara-ahamed-338682331</span>
+  <span>github.com/zarathegrt</span>
+</div>
+<h2>Education</h2>
+<p><span class="role">B.Tech — Computer Science (IoT)</span><span class="date">2024–2028</span><br>
+<span class="org">SRM Institute of Science and Technology, Chennai</span></p>
+<h2>Technical Skills</h2>
+<div class="skills-row"><span class="tag">Python</span><span class="tag">C++</span><span class="tag">HTML</span><span class="tag">Flask</span><span class="tag">TensorFlow</span><span class="tag">OpenCV</span><span class="tag">REST APIs</span><span class="tag">MySQL</span><span class="tag">VS Code</span><span class="tag">Linux</span><span class="tag">Azure</span><span class="tag">ESP32</span></div>
+<h2>Experience</h2>
+<p><span class="role">Vice President</span> — Foreign Language Club<span class="date">Jun 2025–Present</span></p>
+<ul><li>Lead club operations and organize cultural events</li><li>Mentor junior members in event organization and outreach</li></ul>
+<p><span class="role">Event Coordinator</span> — Foreign Language Club<span class="date">Oct 2024–Nov 2025</span></p>
+<ul><li>Organized campus-level cultural and language events</li><li>Coordinated with design and logistics teams</li></ul>
+<p><span class="role">Graphic Designer</span> — CHiPSET<span class="date">Oct 2024–Present</span></p>
+<ul><li>Designed promotional materials for workshops and coding events</li><li>Created digital assets to boost student engagement</li></ul>
+<h2>Projects</h2>
+<p><span class="role">Sign Language Interpreter</span> — Python, OpenCV, TensorFlow</p>
+<p><span class="role">Medication Tracker Web App</span> — Flask, SQLite, REST APIs</p>
+<p><span class="role">Voice-Controlled Smart Lighting (ESP32 IoT)</span> — ESP32, Arduino IDE, Google Assistant</p>
+<h2>Certifications</h2>
+<div class="cert">Advanced Python — Cisco Networking Academy (2025)</div>
+<div class="cert">Operating Systems Basics — Cisco Networking Academy (2025)</div>
+<div class="cert">Data Science, AI & Cybersecurity — Deakin University (2025)</div>
+<div class="cert">C & C++ Programming — Itronix Solutions (2025)</div>
+<div class="cert">Inside GenAI Workshop (2026)</div>
+<h2>Achievements</h2>
+<ul>
+<li>3rd Prize — SARAM Project Expo 2025, SRMIST</li>
+<li>CodeChef 100-Day Coding Streak — Diamond Badge</li>
+<li>Smart India Hackathon (SIH) 2025 — IoT Track; Selected Round 1, SIH 2026</li>
+<li>CodeNex Hackathon (DAYZERO) — 36-hour, SRMIST</li>
+<li>Hackcelerate'26 — 24-hour hackathon, SRMIST</li>
+<li>Yuva AI-Thon — 24-hour AI hackathon, VIT Chennai</li>
+</ul>
+</body></html>`;
+    const blob = new Blob([resumeHTML], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'Zara_Ahamed_Resume.html';
+    a.click();
+  }
+
+  // ══════════════════════════════════
+  // GLITCH on hover hero name
+  // ══════════════════════════════════
+  document.querySelectorAll('.hero-name .glitch').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      el.style.animationPlayState = 'running';
+    });
+  });
+
 </script>
 </body>
 </html>
